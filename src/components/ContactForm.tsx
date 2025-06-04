@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -53,19 +54,19 @@ const ContactForm = () => {
     switch (fieldName) {
       case 'name':
         if (value.trim() === '') {
-          error = 'Name is required';
+          error = t('form.error.name.required');
         }
         break;
       case 'email':
         if (value.trim() === '') {
-          error = 'Email is required';
+          error = t('form.error.email.required');
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-          error = 'Invalid email address';
+          error = t('form.error.email.invalid');
         }
         break;
       case 'message':
         if (value.trim() === '') {
-          error = 'Message is required';
+          error = t('form.error.message.required');
         }
         break;
       default:
@@ -88,54 +89,30 @@ const ContactForm = () => {
     }));
   };
 
-  const sendContactForm = async (data: FormData) => {
-    try {
-      const { error } = await supabase.from('contact_form_submissions').insert([
-        {
-          name: sanitizeInput(data.name),
-          email: sanitizeEmail(data.email),
-          phone: sanitizePhone(data.phone),
-          role: data.role,
-          message: sanitizeInput(data.message),
-          quiz_results: data.quizResults || null,
-        },
-      ]);
+  const sendContactForm = async (formData: FormData) => {
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to: CONTACT_EMAIL,
+        subject: `Contact Form Message: KI Revolution - ${formData.name}`,
+        body: `
+Neue Kontaktanfrage von der KI-Revolution Website:
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw new Error('Failed to submit form');
+Name: ${formData.name}
+E-Mail: ${formData.email}
+Telefon: ${formData.phone}
+Rolle: ${formData.role}
+
+Nachricht:
+${formData.message}
+
+Gesendet am: ${new Date().toLocaleString('de-DE')}
+        `,
+        fromName: formData.name,
+        token: 'legitimate-form-2024'
       }
-
-      // Send email via Supabase Edge Function
-      const emailResponse = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: CONTACT_EMAIL,
-          subject: 'New Contact Form Submission',
-          message: `
-          Name: ${data.name}
-          Email: ${data.email}
-          Phone: ${data.phone}
-          Role: ${data.role}
-          Message: ${data.message}
-          `,
-        }),
-      });
-
-      if (!emailResponse.ok) {
-        const errorData = await emailResponse.json();
-        console.error('Email sending error:', errorData);
-        throw new Error('Failed to send email');
-      }
-
-      return true;
-    } catch (err) {
-      console.error("Submission error:", err);
-      return false;
-    }
+    });
+    
+    return { data, error };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -160,9 +137,9 @@ const ContactForm = () => {
 
     setIsSubmitting(true);
     try {
-      const success = await sendContactForm(formData);
-      if (success) {
-        toast.success("KI-Revolution wurde gestartet! Checke deine E-Mails!");
+      const { data, error } = await sendContactForm(formData);
+      if (!error) {
+        toast.success(t('form.success'));
         setFormData({
           name: '',
           email: '',
@@ -178,11 +155,12 @@ const ContactForm = () => {
           message: ''
         });
       } else {
-        toast.error("Failed to submit the form. Please try again.");
+        console.error('Email sending error:', error);
+        toast.error(t('form.error.submit'));
       }
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error(t('form.error.submit'));
     } finally {
       setIsSubmitting(false);
     }

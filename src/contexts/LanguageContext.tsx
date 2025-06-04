@@ -52,6 +52,14 @@ const translations = {
     'form.message.placeholder': 'Beschreibe deine größten Herausforderungen...',
     'form.submit': 'KI-REVOLUTION STARTEN! 🚀',
     'form.submitting': 'REVOLUTION WIRD GESTARTET...',
+    'form.success': 'KI-Revolution wurde gestartet! Checke deine E-Mails!',
+    
+    // Form Errors
+    'form.error.name.required': 'Name ist erforderlich',
+    'form.error.email.required': 'E-Mail ist erforderlich',
+    'form.error.email.invalid': 'Ungültige E-Mail-Adresse',
+    'form.error.message.required': 'Nachricht ist erforderlich',
+    'form.error.submit': 'Fehler beim Senden. Bitte versuche es erneut.',
     
     // Roles
     'role.ceo': 'CEO/Geschäftsführer',
@@ -96,6 +104,14 @@ const translations = {
     'form.message.placeholder': 'Describe your biggest challenges...',
     'form.submit': 'START AI REVOLUTION! 🚀',
     'form.submitting': 'STARTING REVOLUTION...',
+    'form.success': 'AI Revolution started! Check your emails!',
+    
+    // Form Errors
+    'form.error.name.required': 'Name is required',
+    'form.error.email.required': 'Email is required',
+    'form.error.email.invalid': 'Invalid email address',
+    'form.error.message.required': 'Message is required',
+    'form.error.submit': 'Failed to submit. Please try again.',
     
     // Roles
     'role.ceo': 'CEO/Managing Director',

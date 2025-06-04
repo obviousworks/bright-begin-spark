@@ -171,7 +171,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
         subject: `Contact Form Message: KI Revolution - ${sanitizedData.name}`,
         body: emailBody,
         fromName: sanitizedData.name || 'Website Contact',
-        honeypot: honeypot // Send honeypot for backend validation
+        token: 'legitimate-form-2024' // Add the token for spam prevention
       });
 
       const { data, error } = await supabase.functions.invoke('send-email', {
@@ -180,7 +180,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
           subject: `Contact Form Message: KI Revolution - ${sanitizedData.name}`,
           body: emailBody,
           fromName: sanitizedData.name || 'Website Contact',
-          honeypot: honeypot // Backend validation
+          token: 'legitimate-form-2024' // Backend validation token
         }
       });
 
@@ -241,8 +241,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
               position: 'absolute', 
               left: '-9999px', 
               opacity: 0,
-              pointerEvents: 'none',
-              tabIndex: -1
+              pointerEvents: 'none'
             }}
             aria-hidden="true"
             autoComplete="off"

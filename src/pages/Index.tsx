@@ -1,0 +1,218 @@
+
+import React, { useState, useEffect } from 'react';
+import { ArrowDown, Zap, Target, Code, Users, Brain, Phone, Mail } from 'lucide-react';
+import ProductivityStats from '../components/ProductivityStats';
+import RoleQuiz from '../components/RoleQuiz';
+import ContactForm from '../components/ContactForm';
+import TrainingSection from '../components/TrainingSection';
+import TidyCalEmbed from '../components/TidyCalEmbed';
+
+const Index = () => {
+  const [currentSection, setCurrentSection] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('.section');
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+      sections.forEach((section, index) => {
+        const element = section as HTMLElement;
+        const sectionTop = element.offsetTop;
+        const sectionBottom = sectionTop + element.offsetHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
+          setCurrentSection(index);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-black text-yellow-400 font-mono overflow-x-hidden">
+      {/* Hero Section */}
+      <section className="section min-h-screen flex flex-col justify-center items-center relative bg-gradient-to-br from-black via-purple-900 to-black">
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        
+        {/* Animated Dots Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-yellow-400 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative z-10 text-center max-w-6xl px-8">
+          <div className="inline-block text-6xl md:text-8xl font-bold mb-8 animate-pulse">
+            <span className="text-yellow-400">KI</span>
+            <span className="text-cyan-400">-</span>
+            <span className="text-magenta-400">REVOLUTION</span>
+          </div>
+          
+          <div className="text-2xl md:text-4xl mb-12 text-white">
+            BIST DU <span className="text-yellow-400 animate-bounce">BEREIT</span> ODER WIRST DU 
+            <span className="text-red-500 animate-pulse"> ABGEHÄNGT</span>?
+          </div>
+          
+          <div className="text-lg md:text-xl mb-16 text-cyan-400 max-w-4xl mx-auto">
+            Während deine Konkurrenz mit KI-Tools ihre Produktivität um 
+            <span className="text-yellow-400 font-bold"> 88% steigert</span>, 
+            arbeitest du noch im Steinzeitalter. Zeit für den GAME CHANGER!
+          </div>
+
+          <div className="animate-bounce">
+            <ArrowDown className="w-12 h-12 mx-auto text-yellow-400" />
+          </div>
+        </div>
+
+        {/* Pacman Animation */}
+        <div className="absolute bottom-10 left-0 w-full">
+          <div className="pacman-container">
+            <div className="pacman"></div>
+            <div className="dots">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Productivity Stats */}
+      <ProductivityStats />
+
+      {/* Role Quiz */}
+      <RoleQuiz />
+
+      {/* Training Section */}
+      <TrainingSection />
+
+      {/* Contact Section */}
+      <section className="section min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-900 py-20">
+        <div className="max-w-6xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-7xl font-bold text-yellow-400 mb-8 animate-pulse">
+              GAME OVER FÜR DEINE KONKURRENZ!
+            </h2>
+            <p className="text-xl md:text-2xl text-cyan-400">
+              Starte JETZT deine KI-Revolution und übernimm die Führung!
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div className="border-2 border-yellow-400 rounded-lg p-8 bg-black bg-opacity-50">
+                <h3 className="text-3xl font-bold text-yellow-400 mb-6">
+                  DEIN KI-STRATEGIEEXPERTE
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Users className="w-6 h-6 text-cyan-400" />
+                    <span className="text-xl text-white">Matthias Herbert</span>
+                  </div>
+                  <div className="text-cyan-400">Management Consultant & KI-Strategieexperte</div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <Phone className="w-6 h-6 text-yellow-400" />
+                    <span className="text-white">+49 151 171 13513</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <Mail className="w-6 h-6 text-yellow-400" />
+                    <span className="text-white">matthias.herbert@obviousworks.ch</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* TidyCal Embed */}
+              <TidyCalEmbed />
+            </div>
+
+            {/* Contact Form */}
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+
+      {/* CSS for Pacman Animation - using a style tag since JSX style prop doesn't support keyframes */}
+      <style>
+        {`
+        .pacman-container {
+          position: relative;
+          width: 100%;
+          height: 60px;
+          overflow: hidden;
+        }
+
+        .pacman {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: yellow;
+          position: relative;
+          animation: movePacman 8s linear infinite;
+        }
+
+        .pacman::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: 0;
+          width: 0;
+          height: 0;
+          border: 20px solid transparent;
+          border-right: 20px solid black;
+          transform: translateY(-50%);
+          animation: munch 0.5s ease-in-out infinite alternate;
+        }
+
+        .dots {
+          position: absolute;
+          top: 50%;
+          left: 100px;
+          transform: translateY(-50%);
+          display: flex;
+          gap: 30px;
+          animation: moveDots 8s linear infinite;
+        }
+
+        .dot {
+          width: 8px;
+          height: 8px;
+          background: white;
+          border-radius: 50%;
+        }
+
+        @keyframes movePacman {
+          0% { left: -50px; }
+          100% { left: calc(100% + 50px); }
+        }
+
+        @keyframes moveDots {
+          0% { left: 50px; }
+          100% { left: calc(-200px); }
+        }
+
+        @keyframes munch {
+          0% { transform: translateY(-50%) rotate(0deg); }
+          100% { transform: translateY(-50%) rotate(45deg); }
+        }
+        `}
+      </style>
+    </div>
+  );
+};
+
+export default Index;

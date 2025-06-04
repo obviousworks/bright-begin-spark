@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Send, User, Mail, Phone, MessageSquare, Zap } from 'lucide-react';
 import { toast } from 'sonner';
@@ -166,26 +165,22 @@ ${sanitizedData.quizResults ? `Quiz-Ergebnisse: ${sanitizedData.quizResults}` : 
 Gesendet am: ${new Date().toLocaleString('de-DE')}
       `;
 
-      console.log('Sending email with data:', {
+      const emailData = {
         to: 'matthias.herbert@obviousworks.com',
         subject: `Contact Form Message: KI Revolution - ${sanitizedData.name}`,
         body: emailBody,
         fromName: sanitizedData.name || 'Website Contact',
-        token: 'legitimate-form-2024' // Add the token for spam prevention
-      });
+        token: 'legitimate-form-2024'
+      };
+
+      console.log('Sending email with data:', emailData);
 
       const { data, error } = await supabase.functions.invoke('send-email', {
-        body: {
-          to: 'matthias.herbert@obviousworks.com',
-          subject: `Contact Form Message: KI Revolution - ${sanitizedData.name}`,
-          body: emailBody,
-          fromName: sanitizedData.name || 'Website Contact',
-          token: 'legitimate-form-2024' // Backend validation token
-        }
+        body: emailData
       });
 
       if (error) {
-        console.error('Error sending email:', error);
+        console.error('Supabase function error:', error);
         throw error;
       }
 

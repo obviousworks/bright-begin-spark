@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { contactFormSchema, sanitizeInput, sanitizeEmail, sanitizePhone, type ContactFormData } from '@/lib/validation';
 
+const CONTACT_EMAIL = 'matthias.herbert@obviousworks.ch';
+
 interface FormData {
   name: string;
   email: string;
@@ -123,6 +125,32 @@ const ContactForm = () => {
     }));
   };
 
+  const sendContactForm = async (formData: FormData) => {
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to: CONTACT_EMAIL,
+        subject: `Contact Form Message: KI Revolution - ${formData.name}`,
+        body: `
+Neue Kontaktanfrage von der KI-Revolution Website:
+
+Name: ${formData.name}
+E-Mail: ${formData.email}
+Telefon: ${formData.phone}
+Rolle: ${formData.role}
+
+Nachricht:
+${formData.message}
+
+Gesendet am: ${new Date().toLocaleString('de-DE')}
+        `,
+        fromName: formData.name,
+        token: 'legitimate-form-2024'
+      }
+    });
+    
+    return { data, error };
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -148,36 +176,9 @@ const ContactForm = () => {
         quizResults: formData.quizResults ? sanitizeInput(formData.quizResults) : ''
       };
 
-      // Prepare email content with sanitized data
-      const emailBody = `
-Neue Kontaktanfrage von der KI-Revolution Website:
+      console.log('Sending contact form with data:', sanitizedData);
 
-Name: ${sanitizedData.name}
-E-Mail: ${sanitizedData.email}
-Telefon: ${sanitizedData.phone}
-Rolle: ${sanitizedData.role || 'Nicht angegeben'}
-
-Nachricht:
-${sanitizedData.message || 'Keine Nachricht'}
-
-${sanitizedData.quizResults ? `Quiz-Ergebnisse: ${sanitizedData.quizResults}` : ''}
-
-Gesendet am: ${new Date().toLocaleString('de-DE')}
-      `;
-
-      const emailData = {
-        to: 'matthias.herbert@obviousworks.com',
-        subject: `Contact Form Message: KI Revolution - ${sanitizedData.name}`,
-        body: emailBody,
-        fromName: sanitizedData.name || 'Website Contact',
-        token: 'legitimate-form-2024'
-      };
-
-      console.log('Sending email with data:', emailData);
-
-      const { data, error } = await supabase.functions.invoke('send-email', {
-        body: emailData
-      });
+      const { data, error } = await sendContactForm(sanitizedData);
 
       if (error) {
         console.error('Supabase function error:', error);

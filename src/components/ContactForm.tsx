@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Send, User, Mail, Phone, MessageSquare, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { contactFormSchema, sanitizeInput, sanitizeEmail, sanitizePhone, type ContactFormData } from '@/lib/validation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CONTACT_EMAIL = 'matthias.herbert@obviousworks.ch';
 
@@ -12,19 +13,11 @@ interface FormData {
   phone: string;
   role: string;
   message: string;
-  quizResults: string;
-}
-
-interface FormErrors {
-  name?: string;
-  email?: string;
-  phone?: string;
-  role?: string;
-  message?: string;
   quizResults?: string;
 }
 
 const ContactForm = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -34,374 +27,301 @@ const ContactForm = () => {
     quizResults: ''
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [lastSubmission, setLastSubmission] = useState<number>(0);
-  const [honeypot, setHoneypot] = useState(''); // Honeypot field
+  const isValid = Object.values(formErrors).every(error => error === '') &&
+                    formData.name.trim() !== '' &&
+                    formData.email.trim() !== '' &&
+                    formData.message.trim() !== '';
 
-  const validateForm = (): boolean => {
-    try {
-      // Sanitize inputs before validation
-      const sanitizedData: ContactFormData = {
-        name: sanitizeInput(formData.name),
-        email: sanitizeEmail(formData.email),
-        phone: sanitizePhone(formData.phone),
-        role: formData.role ? sanitizeInput(formData.role) : undefined,
-        message: formData.message ? sanitizeInput(formData.message) : undefined,
-        quizResults: formData.quizResults ? sanitizeInput(formData.quizResults) : undefined
-      };
+  const roles = [
+    { value: 'ceo', label: t('role.ceo') },
+    { value: 'manager', label: t('role.manager') },
+    { value: 'entrepreneur', label: t('role.entrepreneur') },
+    { value: 'freelancer', label: t('role.freelancer') },
+    { value: 'employee', label: t('role.employee') },
+    { value: 'other', label: t('role.other') }
+  ];
 
-      contactFormSchema.parse(sanitizedData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      if (error instanceof Error && 'errors' in error) {
-        const zodError = error as any;
-        const newErrors: FormErrors = {};
-        zodError.errors.forEach((err: any) => {
-          if (err.path && err.path[0]) {
-            newErrors[err.path[0] as keyof FormErrors] = err.message;
-          }
-        });
-        setErrors(newErrors);
-      }
-      return false;
+  const validateField = (fieldName: string, value: string) => {
+    let error = '';
+    switch (fieldName) {
+      case 'name':
+        if (value.trim() === '') {
+          error = 'Name is required';
+        }
+        break;
+      case 'email':
+        if (value.trim() === '') {
+          error = 'Email is required';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+          error = 'Invalid email address';
+        }
+        break;
+      case 'message':
+        if (value.trim() === '') {
+          error = 'Message is required';
+        }
+        break;
+      default:
+        break;
     }
+    return error;
   };
 
-  const checkSpamProtection = (): boolean => {
-    const now = Date.now();
-    const timeSinceLastSubmission = now - lastSubmission;
-    
-    // Honeypot check - if filled, it's spam
-    if (honeypot !== '') {
-      console.log('Spam detected via honeypot');
-      toast.error('Spam erkannt. Bitte versuche es erneut.');
-      return false;
-    }
-
-    // Rate limiting: minimum 10 seconds between submissions
-    if (timeSinceLastSubmission < 10000) {
-      toast.error('Bitte warte mindestens 10 Sekunden zwischen den Anfragen.');
-      return false;
-    }
-
-    // Rate limiting via localStorage
-    const lastSubmit = localStorage.getItem('lastEmailSubmit');
-    if (lastSubmit && (now - parseInt(lastSubmit)) < 60000) { // 1 minute
-      toast.error('Bitte warte eine Minute vor der nächsten Nachricht.');
-      return false;
-    }
-
-    // Basic spam detection
-    const suspiciousPatterns = [
-      /(.)\1{10,}/, // Repeated characters
-      /(http|www|\.com|\.org|\.net)/i, // URLs in form
-      /[^\w\s\-äöüÄÖÜß@.,!?()]/g // Unusual characters
-    ];
-
-    const textToCheck = `${formData.name} ${formData.message}`.toLowerCase();
-    const hasSuspiciousContent = suspiciousPatterns.some(pattern => pattern.test(textToCheck));
-    
-    if (hasSuspiciousContent) {
-      toast.error('Deine Nachricht enthält verdächtige Inhalte. Bitte überprüfe deine Eingabe.');
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Clear error when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-    
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prevData => ({
+      ...prevData,
       [name]: value
+    }));
+
+    // Validate the field and update formErrors
+    setFormErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: validateField(name, value)
     }));
   };
 
-  const sendContactForm = async (formData: FormData) => {
-    const { data, error } = await supabase.functions.invoke('send-email', {
-      body: {
-        to: CONTACT_EMAIL,
-        subject: `Contact Form Message: KI Revolution - ${formData.name}`,
-        body: `
-Neue Kontaktanfrage von der KI-Revolution Website:
+  const sendContactForm = async (data: FormData) => {
+    try {
+      const { error } = await supabase.from('contact_form_submissions').insert([
+        {
+          name: sanitizeInput(data.name),
+          email: sanitizeEmail(data.email),
+          phone: sanitizePhone(data.phone),
+          role: data.role,
+          message: sanitizeInput(data.message),
+          quiz_results: data.quizResults || null,
+        },
+      ]);
 
-Name: ${formData.name}
-E-Mail: ${formData.email}
-Telefon: ${formData.phone}
-Rolle: ${formData.role}
-
-Nachricht:
-${formData.message}
-
-Gesendet am: ${new Date().toLocaleString('de-DE')}
-        `,
-        fromName: formData.name,
-        token: 'legitimate-form-2024'
+      if (error) {
+        console.error('Supabase error:', error);
+        throw new Error('Failed to submit form');
       }
-    });
-    
-    return { data, error };
+
+      // Send email via Supabase Edge Function
+      const emailResponse = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: CONTACT_EMAIL,
+          subject: 'New Contact Form Submission',
+          message: `
+          Name: ${data.name}
+          Email: ${data.email}
+          Phone: ${data.phone}
+          Role: ${data.role}
+          Message: ${data.message}
+          `,
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        const errorData = await emailResponse.json();
+        console.error('Email sending error:', errorData);
+        throw new Error('Failed to send email');
+      }
+
+      return true;
+    } catch (err) {
+      console.error("Submission error:", err);
+      return false;
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      toast.error('Bitte korrigiere die Fehler im Formular.');
-      return;
-    }
 
-    if (!checkSpamProtection()) {
+    // Validate all fields
+    const nameError = validateField('name', formData.name);
+    const emailError = validateField('email', formData.email);
+    const messageError = validateField('message', formData.message);
+
+    setFormErrors({
+      name: nameError,
+      email: emailError,
+      phone: '',
+      message: messageError
+    });
+
+    // If there are any errors, stop submission
+    if (nameError || emailError || messageError) {
       return;
     }
 
     setIsSubmitting(true);
-
     try {
-      // Sanitize all inputs before sending
-      const sanitizedData = {
-        name: sanitizeInput(formData.name),
-        email: sanitizeEmail(formData.email),
-        phone: sanitizePhone(formData.phone),
-        role: formData.role ? sanitizeInput(formData.role) : '',
-        message: formData.message ? sanitizeInput(formData.message) : '',
-        quizResults: formData.quizResults ? sanitizeInput(formData.quizResults) : ''
-      };
-
-      console.log('Sending contact form with data:', sanitizedData);
-
-      const { data, error } = await sendContactForm(sanitizedData);
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
+      const success = await sendContactForm(formData);
+      if (success) {
+        toast.success("KI-Revolution wurde gestartet! Checke deine E-Mails!");
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          role: '',
+          message: '',
+          quizResults: ''
+        });
+        setFormErrors({
+          name: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+      } else {
+        toast.error("Failed to submit the form. Please try again.");
       }
-
-      console.log('Email sent successfully:', data);
-      
-      toast.success('🔥 MISSION ACCOMPLISHED! Deine KI-Revolution startet JETZT!', {
-        description: 'Wir melden uns innerhalb von 24 Stunden bei dir!'
-      });
-      
-      // Update last submission time and store in localStorage
-      const now = Date.now();
-      setLastSubmission(now);
-      localStorage.setItem('lastEmailSubmit', now.toString());
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        role: '',
-        message: '',
-        quizResults: ''
-      });
-      setHoneypot(''); // Reset honeypot
     } catch (error) {
-      console.error('Form submission error:', error);
-      toast.error('Fehler beim Senden. Versuch es nochmal oder ruf direkt an!');
+      console.error("Submission error:", error);
+      toast.error("Failed to submit the form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div id="contact">
-      <div className="border-2 border-yellow-400 rounded-2xl p-8 bg-black bg-opacity-70">
-        <div className="text-center mb-8">
-          <h3 className="text-3xl md:text-4xl font-bold text-yellow-400 mb-4">
-            🚀 MISSION CONTROL
-          </h3>
-          <p className="text-cyan-400 text-lg">
-            Starte JETZT deine KI-Transformation!
-          </p>
-        </div>
+    <div className="border-2 border-cyan-400 rounded-2xl p-8 bg-black bg-opacity-70">
+      <div className="text-center mb-8">
+        <h3 className="text-3xl font-bold text-yellow-400 mb-4 animate-pulse">
+          {t('form.title')}
+        </h3>
+        <p className="text-cyan-400 text-lg">
+          {t('form.subtitle')}
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Honeypot field - invisible to users but visible to bots */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name Field */}
+        <div className="space-y-2">
+          <label htmlFor="name" className="block text-yellow-400 font-bold text-sm">
+            {t('form.name')} *
+          </label>
           <input
             type="text"
-            name="website"
-            value={honeypot}
-            onChange={(e) => setHoneypot(e.target.value)}
-            style={{ 
-              position: 'absolute', 
-              left: '-9999px', 
-              opacity: 0,
-              pointerEvents: 'none'
-            }}
-            aria-hidden="true"
-            autoComplete="off"
-          />
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-yellow-400 font-bold mb-2">
-                <User className="w-5 h-5 inline mr-2" />
-                Name *
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className={`w-full bg-gray-900 border-2 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
-                  errors.name 
-                    ? 'border-red-400 focus:border-red-300' 
-                    : 'border-cyan-400 focus:border-yellow-400'
-                }`}
-                placeholder="Dein Name"
-                maxLength={100}
-              />
-              {errors.name && (
-                <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-yellow-400 font-bold mb-2">
-                <Mail className="w-5 h-5 inline mr-2" />
-                E-Mail *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className={`w-full bg-gray-900 border-2 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
-                  errors.email 
-                    ? 'border-red-400 focus:border-red-300' 
-                    : 'border-cyan-400 focus:border-yellow-400'
-                }`}
-                placeholder="deine@email.com"
-                maxLength={254}
-              />
-              {errors.email && (
-                <p className="text-red-400 text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-yellow-400 font-bold mb-2">
-                <Phone className="w-5 h-5 inline mr-2" />
-                Telefon *
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className={`w-full bg-gray-900 border-2 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
-                  errors.phone 
-                    ? 'border-red-400 focus:border-red-300' 
-                    : 'border-cyan-400 focus:border-yellow-400'
-                }`}
-                placeholder="+49 XXX XXXXXXX"
-                maxLength={50}
-              />
-              {errors.phone && (
-                <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-yellow-400 font-bold mb-2">
-                <Zap className="w-5 h-5 inline mr-2" />
-                Deine Rolle
-              </label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className={`w-full bg-gray-900 border-2 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
-                  errors.role 
-                    ? 'border-red-400 focus:border-red-300' 
-                    : 'border-cyan-400 focus:border-yellow-400'
-                }`}
-              >
-                <option value="">Rolle auswählen</option>
-                <option value="developer">Developer</option>
-                <option value="product-owner">Product Owner</option>
-                <option value="project-manager">Projektmanager</option>
-                <option value="requirements">Requirements Engineer</option>
-                <option value="cto">CTO</option>
-                <option value="c-level">C-Level</option>
-                <option value="other">Andere</option>
-              </select>
-              {errors.role && (
-                <p className="text-red-400 text-sm mt-1">{errors.role}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-yellow-400 font-bold mb-2">
-              <MessageSquare className="w-5 h-5 inline mr-2" />
-              Deine KI-Mission
-            </label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={4}
-              className={`w-full bg-gray-900 border-2 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors resize-none ${
-                errors.message 
-                  ? 'border-red-400 focus:border-red-300' 
-                  : 'border-cyan-400 focus:border-yellow-400'
-              }`}
-              placeholder="Erzähl uns von deinen KI-Zielen und Herausforderungen..."
-              maxLength={2000}
-            />
-            {errors.message && (
-              <p className="text-red-400 text-sm mt-1">{errors.message}</p>
-            )}
-            <div className="text-right text-gray-400 text-sm mt-1">
-              {formData.message.length}/2000 Zeichen
-            </div>
-          </div>
-
-          <button
-            type="submit"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder={t('form.name.placeholder')}
+            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+              formErrors.name ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
+            }`}
+            required
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-black py-4 px-8 rounded-lg font-bold text-xl hover:from-yellow-300 hover:to-orange-300 transition-all transform hover:scale-105 disabled:opacity-50 disabled:transform-none flex items-center justify-center"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mr-3"></div>
-                MISSION LÄUFT...
-              </>
-            ) : (
-              <>
-                <Send className="w-6 h-6 mr-3" />
-                KI-REVOLUTION STARTEN!
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-8 p-6 border border-cyan-400 rounded-lg bg-cyan-900 bg-opacity-20">
-          <div className="text-center text-cyan-400">
-            <div className="text-lg font-bold mb-2">🎯 GARANTIE</div>
-            <div className="text-sm">
-              Innerhalb von 24 Stunden erhältst du eine maßgeschneiderte KI-Strategie für deine Rolle!
-            </div>
-          </div>
+          />
+          {formErrors.name && (
+            <p className="text-red-400 text-sm animate-pulse">{formErrors.name}</p>
+          )}
         </div>
-      </div>
+
+        {/* Email Field */}
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-yellow-400 font-bold text-sm">
+            {t('form.email')} *
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder={t('form.email.placeholder')}
+            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+              formErrors.email ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
+            }`}
+            required
+            disabled={isSubmitting}
+          />
+          {formErrors.email && (
+            <p className="text-red-400 text-sm animate-pulse">{formErrors.email}</p>
+          )}
+        </div>
+
+        {/* Phone Field */}
+        <div className="space-y-2">
+          <label htmlFor="phone" className="block text-yellow-400 font-bold text-sm">
+            {t('form.phone')}
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            placeholder={t('form.phone.placeholder')}
+            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+              formErrors.phone ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
+            }`}
+            disabled={isSubmitting}
+          />
+          {formErrors.phone && (
+            <p className="text-red-400 text-sm animate-pulse">{formErrors.phone}</p>
+          )}
+        </div>
+
+        {/* Role Selection */}
+        <div className="space-y-2">
+          <label htmlFor="role" className="block text-yellow-400 font-bold text-sm">
+            {t('form.role')}
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 bg-black border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:border-cyan-400 transition-all"
+            disabled={isSubmitting}
+          >
+            <option value="">{t('form.role.placeholder')}</option>
+            {roles.map((role) => (
+              <option key={role.value} value={role.value}>
+                {role.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Message Field */}
+        <div className="space-y-2">
+          <label htmlFor="message" className="block text-yellow-400 font-bold text-sm">
+            {t('form.message')} *
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
+            placeholder={t('form.message.placeholder')}
+            rows={5}
+            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all resize-none ${
+              formErrors.message ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
+            }`}
+            required
+            disabled={isSubmitting}
+          />
+          {formErrors.message && (
+            <p className="text-red-400 text-sm animate-pulse">{formErrors.message}</p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={!isValid || isSubmitting}
+          className="w-full py-4 text-lg font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 text-black hover:from-cyan-400 hover:to-yellow-400 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed animate-pulse"
+        >
+          {isSubmitting ? t('form.submitting') : t('form.submit')}
+        </Button>
+      </form>
     </div>
   );
 };

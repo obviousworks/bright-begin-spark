@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowDown, Zap, Target, Code, Users, Brain, Phone, Mail } from 'lucide-react';
 import ProductivityStats from '../components/ProductivityStats';
@@ -6,9 +5,12 @@ import RoleQuiz from '../components/RoleQuiz';
 import ContactForm from '../components/ContactForm';
 import TrainingSection from '../components/TrainingSection';
 import TidyCalEmbed from '../components/TidyCalEmbed';
+import LanguageToggle from '../components/LanguageToggle';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +34,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-black text-yellow-400 font-mono overflow-x-hidden">
+      {/* Language Toggle */}
+      <LanguageToggle />
+
       {/* Hero Section */}
       <section className="section min-h-screen flex flex-col justify-center items-center relative bg-gradient-to-br from-black via-purple-900 to-black">
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -60,14 +65,12 @@ const Index = () => {
           </div>
           
           <div className="text-2xl md:text-4xl mb-12 text-white">
-            BIST DU <span className="text-yellow-400 animate-bounce">BEREIT</span> ODER WIRST DU 
-            <span className="text-red-500 animate-pulse"> ABGEHÄNGT</span>?
+            BIST DU <span className="text-yellow-400 animate-bounce">{t('hero.ready')}</span> ODER WIRST DU 
+            <span className="text-red-500 animate-pulse"> {t('hero.left.behind')}</span>?
           </div>
           
           <div className="text-lg md:text-xl mb-16 text-cyan-400 max-w-4xl mx-auto">
-            Während deine Konkurrenz mit KI-Tools ihre Produktivität um 
-            <span className="text-yellow-400 font-bold"> 88% steigert</span>, 
-            arbeitest du noch im Steinzeitalter. Zeit für den GAME CHANGER!
+            {t('hero.subtitle')}
           </div>
 
           <div className="animate-bounce">
@@ -102,10 +105,10 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-7xl font-bold text-yellow-400 mb-8 animate-pulse">
-              GAME OVER FÜR DEINE KONKURRENZ!
+              {t('contact.title')}
             </h2>
             <p className="text-xl md:text-2xl text-cyan-400">
-              Starte JETZT deine KI-Revolution und übernimm die Führung!
+              {t('contact.subtitle')}
             </p>
           </div>
 
@@ -114,7 +117,7 @@ const Index = () => {
             <div className="space-y-8">
               <div className="border-2 border-yellow-400 rounded-lg p-8 bg-black bg-opacity-50">
                 <h3 className="text-3xl font-bold text-yellow-400 mb-6">
-                  DEIN KI-STRATEGIEEXPERTE
+                  {t('contact.expert.title')}
                 </h3>
                 
                 <div className="space-y-4">
@@ -122,7 +125,7 @@ const Index = () => {
                     <Users className="w-6 h-6 text-cyan-400" />
                     <span className="text-xl text-white">Matthias Herbert</span>
                   </div>
-                  <div className="text-cyan-400">Management Consultant & KI-Strategieexperte</div>
+                  <div className="text-cyan-400">{t('contact.expert.role')}</div>
                   
                   <div className="flex items-center space-x-4">
                     <Phone className="w-6 h-6 text-yellow-400" />

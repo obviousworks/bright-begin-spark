@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowDown, Zap, Target, Code, Users, Brain, Phone, Mail } from 'lucide-react';
 import ProductivityStats from '../components/ProductivityStats';
@@ -102,7 +101,7 @@ const Index = () => {
       <TrainingSection />
 
       {/* Contact Section */}
-      <section className="section min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-900 py-12 sm:py-20">
+      <section id="contact" className="section min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-900 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold text-yellow-400 mb-6 sm:mb-8 animate-pulse leading-tight">

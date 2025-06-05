@@ -1,61 +1,63 @@
 
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Code, Users, Target, Brain, Zap } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ProductivityStats = () => {
+  const { t } = useLanguage();
   const [currentStat, setCurrentStat] = useState(0);
 
   const stats = [
     {
       icon: <Code className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "SOFTWARE DEVELOPERS",
-      stat: "88% produktiver",
-      description: "Entwickler mit AI-Tools sind 88% produktiver als ohne AI.",
+      category: t('stats.software.developers'),
+      stat: t('stats.productivity.88'),
+      description: t('stats.productivity.88.desc'),
       source: "GitHub Studie",
       url: "https://thebusinessdive.com/ai-productivity-statistics",
       color: "from-cyan-500 to-blue-500"
     },
     {
       icon: <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "SOFTWARE DEVELOPERS",
-      stat: "126% mehr Projekte",
-      description: "126% mehr Projekte pro Woche durch AI-Unterstützung bei Programmierern.",
+      category: t('stats.software.developers'),
+      stat: t('stats.projects.126'),
+      description: t('stats.projects.126.desc'),
       source: "Nielsen Norman Group",
       url: "https://hatchworks.com/blog/gen-ai/generative-ai-statistics/",
       color: "from-green-500 to-emerald-500"
     },
     {
       icon: <Brain className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "SOFTWARE DEVELOPERS",
-      stat: "41% AI-generierter Code",
-      description: "41% des gesamten Codes wird bereits von AI generiert.",
+      category: t('stats.software.developers'),
+      stat: t('stats.ai.code.41'),
+      description: t('stats.ai.code.41.desc'),
       source: "Elite Brains",
       url: "https://www.elitebrains.com/blog/aI-generated-code-statistics-2025",
       color: "from-purple-500 to-pink-500"
     },
     {
       icon: <Users className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "PROJECT MANAGEMENT",
-      stat: "Jeder 5. nutzt AI",
-      description: "Jeder 5. Projektmanager nutzt generative AI in über 50% seiner Projekte.",
+      category: t('stats.project.management'),
+      stat: t('stats.pm.usage'),
+      description: t('stats.pm.usage.desc'),
       source: "Monday.com",
       url: "https://monday.com/blog/project-management/project-management-statistics/",
       color: "from-yellow-500 to-orange-500"
     },
     {
       icon: <Target className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "PROJECT MANAGEMENT",
-      stat: "80% Aufgaben eliminiert",
-      description: "80% der heutigen Projektmanagement-Aufgaben werden bis 2030 durch AI eliminiert.",
+      category: t('stats.project.management'),
+      stat: t('stats.tasks.eliminated'),
+      description: t('stats.tasks.eliminated.desc'),
       source: "Gartner",
       url: "https://www.gartner.com/en/newsroom/press-releases/2019-03-20-gartner-says-80-percent-of-today-s-project-management",
       color: "from-red-500 to-pink-500"
     },
     {
       icon: <Zap className="w-12 h-12 sm:w-16 sm:h-16" />,
-      category: "BUSINESS ANALYSTEN",
-      stat: "59% mehr Dokumente",
-      description: "59% mehr Geschäftsdokumente pro Stunde mit generativer AI.",
+      category: t('stats.business.analysts'),
+      stat: t('stats.documents.59'),
+      description: t('stats.documents.59.desc'),
       source: "Nielsen Norman Group",
       url: "https://hatchworks.com/blog/gen-ai/generative-ai-statistics/",
       color: "from-indigo-500 to-purple-500"
@@ -75,10 +77,10 @@ const ProductivityStats = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold text-yellow-400 mb-6 sm:mb-8 animate-pulse leading-tight">
-            HARDCORE FAKTEN
+            {t('stats.title')}
           </h2>
           <p className="text-lg sm:text-xl md:text-2xl text-cyan-400 leading-relaxed">
-            Während DU noch überlegst, überholt dich die KONKURRENZ!
+            {t('stats.subtitle')}
           </p>
         </div>
 
@@ -108,7 +110,7 @@ const ProductivityStats = () => {
                 rel="noopener noreferrer"
                 className="text-cyan-400 hover:text-yellow-400 transition-colors underline text-sm sm:text-lg"
               >
-                Quelle: {stats[currentStat].source}
+                {t('stats.source')}: {stats[currentStat].source}
               </a>
             </div>
           </div>

@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { User, Code, Target, FileText, Monitor, Settings, CheckCircle } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Answer {
   id: string;
@@ -23,6 +23,7 @@ interface Role {
 }
 
 const RoleQuiz = () => {
+  const { t } = useLanguage();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -303,20 +304,20 @@ const RoleQuiz = () => {
 
     if (percentage >= 80) {
       return {
-        title: "🔥 KI-REVOLUTION READY!",
-        message: "Du bist BEREIT für die totale KI-Transformation! Zeit für Action!",
+        title: t('quiz.result.ready.title'),
+        message: t('quiz.result.ready.message'),
         color: "text-green-400"
       };
     } else if (percentage >= 60) {
       return {
-        title: "⚡ FAST BEREIT!",
-        message: "Du spürst bereits die KI-Power! Ein kleiner Schub und du dominierst!",
+        title: t('quiz.result.almost.title'),
+        message: t('quiz.result.almost.message'),
         color: "text-yellow-400"
       };
     } else {
       return {
-        title: "⚠️ AUFWACHEN!",
-        message: "Die KI-Revolution läuft! Zeit aufzuholen, bevor es zu spät ist!",
+        title: t('quiz.result.wake.title'),
+        message: t('quiz.result.wake.message'),
         color: "text-red-400"
       };
     }
@@ -324,11 +325,11 @@ const RoleQuiz = () => {
 
   const finalQuestion = {
     id: 'final',
-    text: 'FINALE MACHTFRAGE FÜR ALLE: In 18 Monaten führen KI-trainierte Teams den Markt an. Dein Team? Kämpft noch mit Grundlagen. AUFWACHEN oder ABDANKEN?',
+    text: t('quiz.final.question'),
     answers: [
-      { id: 'a', text: '18 Monate sind lange hin', points: 1 },
-      { id: 'b', text: 'Abwarten und beobachten', points: 2 },
-      { id: 'c', text: 'AUFWACHEN! Revolution starts NOW!', points: 3 }
+      { id: 'a', text: t('quiz.final.a'), points: 1 },
+      { id: 'b', text: t('quiz.final.b'), points: 2 },
+      { id: 'c', text: t('quiz.final.c'), points: 3 }
     ]
   };
 
@@ -349,7 +350,7 @@ const RoleQuiz = () => {
             </div>
 
             <div className="text-lg text-cyan-400 mb-12">
-              Dein Score: {score} von {selectedRoleData ? (selectedRoleData.questions.length + 1) * 3 : 12} Punkten
+              {t('quiz.your.score')}: {score} {t('quiz.of')} {selectedRoleData ? (selectedRoleData.questions.length + 1) * 3 : 12} {t('quiz.points')}
             </div>
 
             <button
@@ -361,14 +362,14 @@ const RoleQuiz = () => {
               }}
               className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-8 py-4 rounded-lg font-bold text-xl hover:from-yellow-300 hover:to-orange-300 transition-all transform hover:scale-105 mr-4"
             >
-              NOCHMAL SPIELEN
+              {t('quiz.play.again')}
             </button>
 
             <button
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="bg-gradient-to-r from-cyan-400 to-blue-400 text-black px-8 py-4 rounded-lg font-bold text-xl hover:from-cyan-300 hover:to-blue-300 transition-all transform hover:scale-105"
             >
-              KI-TRAINING STARTEN!
+              {t('quiz.start.training')}
             </button>
           </div>
         </div>
@@ -383,10 +384,10 @@ const RoleQuiz = () => {
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-7xl font-bold text-yellow-400 mb-8 animate-pulse">
-              🔥 KI-REVOLUTION QUIZ
+              {t('quiz.title')}
             </h2>
             <p className="text-xl md:text-2xl text-cyan-400">
-              BIST DU BEREIT ODER WIRST DU ABGEHÄNGT?
+              {t('quiz.subtitle')}
             </p>
           </div>
 
@@ -405,7 +406,7 @@ const RoleQuiz = () => {
                     {role.title}
                   </h3>
                   <div className="text-white">
-                    Klicken für dein persönliches KI-Assessment
+                    {t('quiz.click.assessment')}
                   </div>
                 </div>
               </div>
@@ -434,7 +435,7 @@ const RoleQuiz = () => {
           </div>
           
           <div className="text-cyan-400 text-lg">
-            Frage {currentQuestion + 1} von {(selectedRoleData?.questions.length || 0) + 1}
+            {t('quiz.question')} {currentQuestion + 1} {t('quiz.of')} {(selectedRoleData?.questions.length || 0) + 1}
           </div>
         </div>
 
@@ -476,7 +477,7 @@ const RoleQuiz = () => {
                   onClick={nextQuestion}
                   className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-12 py-4 rounded-lg font-bold text-xl hover:from-yellow-300 hover:to-orange-300 transition-all transform hover:scale-105"
                 >
-                  {currentQuestion === (selectedRoleData?.questions.length || 0) ? 'ERGEBNISSE ZEIGEN!' : 'NÄCHSTE FRAGE'}
+                  {currentQuestion === (selectedRoleData?.questions.length || 0) ? t('quiz.show.results') : t('quiz.next.question')}
                 </button>
               </div>
             )}

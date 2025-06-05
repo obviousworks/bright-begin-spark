@@ -59,13 +59,13 @@ const Index = () => {
 
         <div className="relative z-10 text-center max-w-6xl px-4 sm:px-8">
           <div className="inline-block text-4xl sm:text-6xl md:text-8xl font-bold mb-6 sm:mb-8 animate-pulse">
-            <span className="text-yellow-400">KI</span>
+            <span className="text-yellow-400">{t('hero.title.ai')}</span>
             <span className="text-cyan-400">-</span>
-            <span className="text-magenta-400">REVOLUTION</span>
+            <span className="text-magenta-400">{t('hero.title.revolution')}</span>
           </div>
           
           <div className="text-lg sm:text-2xl md:text-4xl mb-8 sm:mb-12 text-white leading-tight">
-            BIST DU <span className="text-yellow-400 animate-bounce">{t('hero.ready')}</span> ODER WIRST DU 
+            {t('hero.question')} <span className="text-yellow-400 animate-bounce">{t('hero.ready')}</span> {t('hero.or')}
             <span className="text-red-500 animate-pulse"> {t('hero.left.behind')}</span>?
           </div>
           

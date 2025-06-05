@@ -23,8 +23,12 @@ export const useLanguage = () => {
 const translations = {
   de: {
     // Hero Section
+    'hero.title.ai': 'KI',
+    'hero.title.revolution': 'REVOLUTION',
     'hero.ready': 'BEREIT',
     'hero.left.behind': 'ABGEHÄNGT',
+    'hero.question': 'BIST DU',
+    'hero.or': 'ODER WIRST DU',
     'hero.subtitle': 'Während deine Konkurrenz mit KI-Tools ihre Produktivität um 88% steigert, arbeitest du noch im Steinzeitalter. Zeit für den GAME CHANGER!',
     
     // Productivity Stats Section
@@ -150,8 +154,12 @@ const translations = {
   },
   en: {
     // Hero Section
+    'hero.title.ai': 'AI',
+    'hero.title.revolution': 'REVOLUTION',
     'hero.ready': 'READY',
     'hero.left.behind': 'LEFT BEHIND',
+    'hero.question': 'ARE YOU',
+    'hero.or': 'OR WILL YOU BE',
     'hero.subtitle': 'While your competition increases productivity by 88% with AI tools, you\'re still working in the stone age. Time for the GAME CHANGER!',
     
     // Productivity Stats Section

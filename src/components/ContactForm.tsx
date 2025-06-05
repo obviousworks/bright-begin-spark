@@ -167,17 +167,17 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
   };
 
   return (
-    <div className="border-2 border-cyan-400 rounded-2xl p-8 bg-black bg-opacity-70">
-      <div className="text-center mb-8">
-        <h3 className="text-3xl font-bold text-yellow-400 mb-4 animate-pulse">
+    <div className="border-2 border-cyan-400 rounded-2xl p-4 sm:p-6 lg:p-8 bg-black bg-opacity-70">
+      <div className="text-center mb-6 sm:mb-8">
+        <h3 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-3 sm:mb-4 animate-pulse leading-tight">
           {t('form.title')}
         </h3>
-        <p className="text-cyan-400 text-lg">
+        <p className="text-cyan-400 text-base sm:text-lg leading-relaxed">
           {t('form.subtitle')}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Name Field */}
         <div className="space-y-2">
           <label htmlFor="name" className="block text-yellow-400 font-bold text-sm">
@@ -190,7 +190,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
             value={formData.name}
             onChange={handleInputChange}
             placeholder={t('form.name.placeholder')}
-            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+            className={`w-full px-3 sm:px-4 py-2 sm:py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all text-sm sm:text-base ${
               formErrors.name ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
             }`}
             required
@@ -213,7 +213,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
             value={formData.email}
             onChange={handleInputChange}
             placeholder={t('form.email.placeholder')}
-            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+            className={`w-full px-3 sm:px-4 py-2 sm:py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all text-sm sm:text-base ${
               formErrors.email ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
             }`}
             required
@@ -236,7 +236,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
             value={formData.phone}
             onChange={handleInputChange}
             placeholder={t('form.phone.placeholder')}
-            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all ${
+            className={`w-full px-3 sm:px-4 py-2 sm:py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all text-sm sm:text-base ${
               formErrors.phone ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
             }`}
             disabled={isSubmitting}
@@ -256,7 +256,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
             name="role"
             value={formData.role}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 bg-black border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:border-cyan-400 transition-all"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-black border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:border-cyan-400 transition-all text-sm sm:text-base"
             disabled={isSubmitting}
           >
             <option value="">{t('form.role.placeholder')}</option>
@@ -279,8 +279,8 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
             value={formData.message}
             onChange={handleInputChange}
             placeholder={t('form.message.placeholder')}
-            rows={5}
-            className={`w-full px-4 py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all resize-none ${
+            rows={4}
+            className={`w-full px-3 sm:px-4 py-2 sm:py-3 bg-black border-2 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all resize-none text-sm sm:text-base ${
               formErrors.message ? 'border-red-500' : 'border-gray-600 hover:border-cyan-400'
             }`}
             required
@@ -295,7 +295,7 @@ Gesendet am: ${new Date().toLocaleString('de-DE')}
         <Button
           type="submit"
           disabled={!isValid || isSubmitting}
-          className="w-full py-4 text-lg font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 text-black hover:from-cyan-400 hover:to-yellow-400 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed animate-pulse"
+          className="w-full py-3 sm:py-4 text-base sm:text-lg font-bold bg-gradient-to-r from-yellow-400 to-cyan-400 text-black hover:from-cyan-400 hover:to-yellow-400 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed animate-pulse"
         >
           {isSubmitting ? t('form.submitting') : t('form.submit')}
         </Button>

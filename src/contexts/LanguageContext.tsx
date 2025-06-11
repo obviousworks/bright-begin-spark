@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type Language = 'de' | 'en';
@@ -29,7 +28,7 @@ const translations = {
     'hero.left.behind': 'ABGEHÄNGT',
     'hero.question': 'BIST DU',
     'hero.or': 'ODER WIRST DU',
-    'hero.subtitle': 'Während deine Konkurrenz mit KI-Tools ihre Produktivität um 88% steigert, arbeitest du noch im Steinzeitalter. Zeit für den GAME CHANGER!',
+    'hero.subtitle': 'Wir MÜSSEN viel ändern, damit alles so bleibt wie es JEZTZ ist!',
     
     // Productivity Stats Section
     'stats.title': 'HARDCORE FAKTEN',
@@ -302,3 +301,5 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     </LanguageContext.Provider>
   );
 };
+
+export default LanguageProvider;

@@ -149,7 +149,7 @@ const PacmanAnimation = () => {
 
         .pacman-dot {
           position: absolute;
-          top: 50%;
+          top: 0;
           width: 8px;
           height: 8px;
           background: #ffffff;

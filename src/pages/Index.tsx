@@ -6,6 +6,7 @@ import ContactForm from '../components/ContactForm';
 import TrainingSection from '../components/TrainingSection';
 import TidyCalEmbed from '../components/TidyCalEmbed';
 import LanguageToggle from '../components/LanguageToggle';
+import PacmanAnimation from '../components/PacmanAnimation';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
@@ -78,17 +79,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Enhanced Pacman Animation - Hidden on small screens */}
-        <div className="absolute bottom-10 left-0 w-full hidden sm:block">
-          <div className="pacman-container">
-            <div className="pacman"></div>
-            <div className="pacman-trail">
-              {[...Array(20)].map((_, i) => (
-                <div key={i} className="trail-dot"></div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Interactive Pacman Animation */}
+        <PacmanAnimation />
       </section>
 
       {/* Productivity Stats */}

@@ -159,7 +159,7 @@ const translations = {
     'hero.left.behind': 'LEFT BEHIND',
     'hero.question': 'ARE YOU',
     'hero.or': 'OR WILL YOU BE',
-    'hero.subtitle': 'While your competition increases productivity by 88% with AI tools, you\'re still working in the stone age. Time for the GAME CHANGER!',
+    'hero.subtitle': 'We MUST change a lot so that everything stays as it IS NOW!',
     
     // Productivity Stats Section
     'stats.title': 'HARDCORE FACTS',

@@ -78,14 +78,14 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Pacman Animation - Hidden on small screens */}
+        {/* Enhanced Pacman Animation - Hidden on small screens */}
         <div className="absolute bottom-10 left-0 w-full hidden sm:block">
           <div className="pacman-container">
             <div className="pacman"></div>
-            <div className="dots">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
+            <div className="pacman-trail">
+              {[...Array(20)].map((_, i) => (
+                <div key={i} className="trail-dot"></div>
+              ))}
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CSS for Pacman Animation */}
+      {/* Enhanced CSS for Pacman Animation */}
       <style>
         {`
         .pacman-container {
@@ -163,9 +163,11 @@ const Index = () => {
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background: yellow;
+          background: #fbbf24;
           position: relative;
-          animation: movePacman 8s linear infinite;
+          animation: movePacman 12s linear infinite;
+          z-index: 10;
+          box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
         }
 
         .pacman::before {
@@ -178,24 +180,37 @@ const Index = () => {
           border: 20px solid transparent;
           border-right: 20px solid black;
           transform: translateY(-50%);
-          animation: munch 0.5s ease-in-out infinite alternate;
+          animation: munch 0.3s ease-in-out infinite alternate;
         }
 
-        .dots {
+        .pacman-trail {
           position: absolute;
           top: 50%;
-          left: 100px;
+          left: 0;
           transform: translateY(-50%);
           display: flex;
-          gap: 30px;
-          animation: moveDots 8s linear infinite;
+          gap: 25px;
+          animation: moveTrail 12s linear infinite;
+          z-index: 5;
         }
 
-        .dot {
+        .trail-dot {
           width: 8px;
           height: 8px;
-          background: white;
+          background: #ffffff;
           border-radius: 50%;
+          box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+          animation: dotPulse 1s ease-in-out infinite alternate;
+        }
+
+        .trail-dot:nth-child(odd) {
+          background: #06d6a0;
+          box-shadow: 0 0 8px rgba(6, 214, 160, 0.6);
+        }
+
+        .trail-dot:nth-child(3n) {
+          background: #f72585;
+          box-shadow: 0 0 8px rgba(247, 37, 133, 0.6);
         }
 
         @keyframes movePacman {
@@ -203,14 +218,42 @@ const Index = () => {
           100% { left: calc(100% + 50px); }
         }
 
-        @keyframes moveDots {
-          0% { left: 50px; }
-          100% { left: calc(-200px); }
+        @keyframes moveTrail {
+          0% { left: -500px; }
+          100% { left: calc(100% + 100px); }
         }
 
         @keyframes munch {
-          0% { transform: translateY(-50%) rotate(0deg); }
-          100% { transform: translateY(-50%) rotate(45deg); }
+          0% { 
+            transform: translateY(-50%) rotate(0deg);
+            border-right-color: black;
+          }
+          100% { 
+            transform: translateY(-50%) rotate(45deg);
+            border-right-color: rgba(0, 0, 0, 0.8);
+          }
+        }
+
+        @keyframes dotPulse {
+          0% { 
+            transform: scale(1);
+            opacity: 1;
+          }
+          100% { 
+            transform: scale(1.2);
+            opacity: 0.7;
+          }
+        }
+
+        /* Stagger the dot animations */
+        .trail-dot:nth-child(2n) {
+          animation-delay: 0.1s;
+        }
+        .trail-dot:nth-child(3n) {
+          animation-delay: 0.2s;
+        }
+        .trail-dot:nth-child(4n) {
+          animation-delay: 0.3s;
         }
         `}
       </style>

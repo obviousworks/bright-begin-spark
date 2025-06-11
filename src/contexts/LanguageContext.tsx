@@ -23,7 +23,7 @@ const translations = {
   de: {
     // Hero Section
     'hero.title.ai': 'KI',
-    'hero.title.revolution': 'REVOLUTION',
+    'hero.title.revolution': 'REALITÄT',
     'hero.ready': 'BEREIT',
     'hero.left.behind': 'ABGEHÄNGT',
     'hero.question': 'BIST DU',
@@ -154,7 +154,7 @@ const translations = {
   en: {
     // Hero Section
     'hero.title.ai': 'AI',
-    'hero.title.revolution': 'REVOLUTION',
+    'hero.title.revolution': 'REALITY',
     'hero.ready': 'READY',
     'hero.left.behind': 'LEFT BEHIND',
     'hero.question': 'ARE YOU',

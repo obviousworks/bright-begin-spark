@@ -12,11 +12,11 @@ const PacmanAnimation = () => {
     const container = containerRef.current;
     const pacman = pacmanRef.current;
     const containerWidth = container.offsetWidth;
-    const pacmanWidth = 40;
+    const pacmanWidth = 60;
     const dotSpacing = 30;
     const totalDots = Math.floor(containerWidth / dotSpacing);
     
-    let pacmanX = -50;
+    let pacmanX = -70;
     let direction = 1; // 1 for right, -1 for left
     let animationId: number;
     let eatenDots = new Set<number>();
@@ -74,7 +74,7 @@ const PacmanAnimation = () => {
       if (direction === 1 && pacmanX > containerWidth - pacmanWidth) {
         direction = -1;
         pacman.style.transform = 'scaleX(-1)';
-      } else if (direction === -1 && pacmanX < -50) {
+      } else if (direction === -1 && pacmanX < -70) {
         direction = 1;
         pacman.style.transform = 'scaleX(1)';
       }
@@ -107,7 +107,8 @@ const PacmanAnimation = () => {
           ref={pacmanRef}
           className="pacman-character"
         >
-          <div className="pacman-mouth"></div>
+          <div className="pacman-top"></div>
+          <div className="pacman-bottom"></div>
         </div>
         
         {/* Dots Container */}
@@ -120,27 +121,30 @@ const PacmanAnimation = () => {
         .pacman-character {
           position: absolute;
           top: 50%;
-          left: -50px;
-          width: 40px;
-          height: 40px;
-          background: #fbbf24;
-          border-radius: 50%;
+          left: -70px;
+          width: 60px;
+          height: 60px;
           transform: translateY(-50%);
-          box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
           z-index: 10;
           transition: transform 0.3s ease;
         }
 
-        .pacman-mouth {
-          position: absolute;
-          top: 50%;
-          right: 0;
-          width: 0;
-          height: 0;
-          border: 20px solid transparent;
-          border-right: 20px solid black;
-          transform: translateY(-50%);
-          animation: munch 0.3s ease-in-out infinite alternate;
+        .pacman-top {
+          background-color: #fbbf24;
+          height: 30px;
+          width: 60px;
+          border-radius: 30px 30px 0 0;
+          animation: spin1 0.5s infinite linear;
+          box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+        }
+
+        .pacman-bottom {
+          background-color: #fbbf24;
+          height: 30px;
+          width: 60px;
+          border-radius: 0 0 30px 30px;
+          animation: spin2 0.5s infinite linear;
+          box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
         }
 
         .pacman-dot {
@@ -171,15 +175,15 @@ const PacmanAnimation = () => {
           box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
         }
 
-        @keyframes munch {
-          0% { 
-            transform: translateY(-50%) rotate(0deg);
-            border-right-color: black;
-          }
-          100% { 
-            transform: translateY(-50%) rotate(45deg);
-            border-right-color: rgba(0, 0, 0, 0.8);
-          }
+        /* Pacman mouth animations */
+        @keyframes spin1 {
+          0% { transform: rotate(0deg); }
+          50% { transform: rotate(-35deg); }
+        }
+
+        @keyframes spin2 {
+          0% { transform: rotate(0deg); }
+          50% { transform: rotate(35deg); }
         }
 
         @keyframes dotGlow {

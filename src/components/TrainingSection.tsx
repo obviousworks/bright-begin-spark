@@ -16,11 +16,11 @@ const TrainingSection = () => {
       icon: <Code className="w-12 h-12" />,
       color: 'from-cyan-500 to-blue-500',
       features: [
-        'Advanced Prompting Engineering',
-        'GitHub Copilot Mastery',
-        'AI-Assisted Code Review',
-        'Automated Testing mit AI',
-        'KI-gestützte Dokumentation'
+        t('training.feature.advanced.prompting'),
+        t('training.feature.github.copilot'),
+        t('training.feature.ai.code.review'),
+        t('training.feature.automated.testing'),
+        t('training.feature.ai.documentation')
       ],
       type: t('training.type.intensive'),
       bookingUrl: 'https://www.tickettailor.com/events/obviousworksgmbh?srch=ai+developer+bootcamp'
@@ -33,10 +33,10 @@ const TrainingSection = () => {
       icon: <BookOpen className="w-12 h-12" />,
       color: 'from-green-500 to-emerald-500',
       features: [
-        'Automatisierte Anforderungsermittlung',
-        'KI-gestützte Stakeholder-Analyse',
-        'Smart Requirements Documentation',
-        'AI-basierte Risikoanalyse'
+        t('training.feature.automated.requirements'),
+        t('training.feature.stakeholder.analysis'),
+        t('training.feature.smart.documentation'),
+        t('training.feature.risk.analysis')
       ],
       type: t('training.type.intensive'),
       bookingUrl: 'https://www.tickettailor.com/events/obviousworksgmbh?srch=ai+im+requirements+engineering'
@@ -49,10 +49,10 @@ const TrainingSection = () => {
       icon: <Target className="w-12 h-12" />,
       color: 'from-purple-500 to-pink-500',
       features: [
-        'Automatisierte Marktanalyse',
-        'Intelligente Backlog-Optimierung',
-        'KI-gestützte User Story Creation',
-        'Predictive Analytics für Produktentscheidungen'
+        t('training.feature.market.analysis'),
+        t('training.feature.backlog.optimization'),
+        t('training.feature.user.story.creation'),
+        t('training.feature.predictive.analytics')
       ],
       type: t('training.type.strategic'),
       bookingUrl: 'https://www.tickettailor.com/events/obviousworksgmbh?srch=owner'
@@ -65,10 +65,10 @@ const TrainingSection = () => {
       icon: <Zap className="w-12 h-12" />,
       color: 'from-yellow-500 to-orange-500',
       features: [
-        'LLM-Technologien verstehen',
-        'Effective Prompting Strategies',
-        'Code Generation Best Practices',
-        'KI-Tool Integration'
+        t('training.feature.llm.technologies'),
+        t('training.feature.prompting.strategies'),
+        t('training.feature.code.generation'),
+        t('training.feature.tool.integration')
       ],
       type: t('training.type.foundation'),
       bookingUrl: 'https://www.tickettailor.com/events/obviousworksgmbh?srch=softwareent'

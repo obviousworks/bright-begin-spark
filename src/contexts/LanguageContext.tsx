@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type Language = 'de' | 'en';
@@ -104,6 +105,25 @@ const translations = {
     'training.immediately.applicable': 'Sofort anwendbar',
     'training.job.ready': 'Direkt im Job nutzbar',
     'training.start.now': 'JETZT DURCHSTARTEN!',
+    
+    // Training Course Features
+    'training.feature.advanced.prompting': 'Advanced Prompting Engineering',
+    'training.feature.github.copilot': 'GitHub Copilot Mastery',
+    'training.feature.ai.code.review': 'AI-Assisted Code Review',
+    'training.feature.automated.testing': 'Automated Testing mit AI',
+    'training.feature.ai.documentation': 'KI-gestützte Dokumentation',
+    'training.feature.automated.requirements': 'Automatisierte Anforderungsermittlung',
+    'training.feature.stakeholder.analysis': 'KI-gestützte Stakeholder-Analyse',
+    'training.feature.smart.documentation': 'Smart Requirements Documentation',
+    'training.feature.risk.analysis': 'AI-basierte Risikoanalyse',
+    'training.feature.market.analysis': 'Automatisierte Marktanalyse',
+    'training.feature.backlog.optimization': 'Intelligente Backlog-Optimierung',
+    'training.feature.user.story.creation': 'KI-gestützte User Story Creation',
+    'training.feature.predictive.analytics': 'Predictive Analytics für Produktentscheidungen',
+    'training.feature.llm.technologies': 'LLM-Technologien verstehen',
+    'training.feature.prompting.strategies': 'Effective Prompting Strategies',
+    'training.feature.code.generation': 'Code Generation Best Practices',
+    'training.feature.tool.integration': 'KI-Tool Integration',
     
     // Contact Section
     'contact.title': 'GAME OVER FÜR DEINE KONKURRENZ!',
@@ -235,6 +255,25 @@ const translations = {
     'training.immediately.applicable': 'Immediately applicable',
     'training.job.ready': 'Directly usable in your job',
     'training.start.now': 'START NOW!',
+    
+    // Training Course Features
+    'training.feature.advanced.prompting': 'Advanced Prompting Engineering',
+    'training.feature.github.copilot': 'GitHub Copilot Mastery',
+    'training.feature.ai.code.review': 'AI-Assisted Code Review',
+    'training.feature.automated.testing': 'Automated Testing with AI',
+    'training.feature.ai.documentation': 'AI-supported Documentation',
+    'training.feature.automated.requirements': 'Automated Requirements Gathering',
+    'training.feature.stakeholder.analysis': 'AI-supported Stakeholder Analysis',
+    'training.feature.smart.documentation': 'Smart Requirements Documentation',
+    'training.feature.risk.analysis': 'AI-based Risk Analysis',
+    'training.feature.market.analysis': 'Automated Market Analysis',
+    'training.feature.backlog.optimization': 'Intelligent Backlog Optimization',
+    'training.feature.user.story.creation': 'AI-supported User Story Creation',
+    'training.feature.predictive.analytics': 'Predictive Analytics for Product Decisions',
+    'training.feature.llm.technologies': 'Understanding LLM Technologies',
+    'training.feature.prompting.strategies': 'Effective Prompting Strategies',
+    'training.feature.code.generation': 'Code Generation Best Practices',
+    'training.feature.tool.integration': 'AI Tool Integration',
     
     // Contact Section
     'contact.title': 'GAME OVER FOR YOUR COMPETITION!',
